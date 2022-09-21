@@ -1,7 +1,6 @@
 package winged.example.domain.interceptor
 
 import android.content.Context
-
 import okhttp3.Interceptor
 import okhttp3.Protocol
 import okhttp3.Request

@@ -8,8 +8,8 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
+import winged.example.presentation.GlideApp
 import winged.example.presentation.R
 import winged.example.presentation.databinding.FragmentDoggoBinding
 
@@ -40,8 +40,16 @@ class DoggoFragment : Fragment(R.layout.fragment_doggo) {
             .makeRequest()
             .subscribe(
                 { response ->
-                    Glide.with(requireContext()).load(response.message).into(binding.imageView)
-                    binding.button.isEnabled = true // allows for another call after one is finished
+                    // this "success" could be replaced by an enum
+                    if (response.status == "success") {
+                        // attempt to load the image only if the API call was successful
+                        // and to clarify: it will not be successful only if something happens
+                        // on the API's side (and I do not mean 400 or 503 result codes, those are
+                        // handled by our request interceptor)
+                        GlideApp.with(requireContext()).load(response.message).into(binding.imageView)
+                    }
+                    // allows for another call after the previous one is finished
+                    binding.button.isEnabled = true
                 },
                 { throwable ->
                     Toast.makeText(requireContext(), throwable.message, Toast.LENGTH_SHORT).show()
